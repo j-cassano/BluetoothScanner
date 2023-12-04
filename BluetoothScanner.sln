@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BluetoothScanner", "BluetoothScanner\BluetoothScanner.csproj", "{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CCD3E9E-9A06-4500-B9F7-5C39D978E0CC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {284E0DEA-A208-4A96-BA51-21A97073E4BC}
+	EndGlobalSection
+EndGlobal

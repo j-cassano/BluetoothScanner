@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BluetoothScanner.MainPage"
+             xmlns:viewmodels="clr-namespace:BluetoothScanner.ViewModels">
+    <ScrollView
+        Padding="30,0">
+        <VerticalStackLayout>
+        <Label Text="Devices Found" Style="{StaticResource Headline}" SemanticProperties.HeadingLevel="Level1" />
+        <Button
+                x:Name="ScanBtn"
+                Text="{Binding ScanButtonText}" 
+                SemanticProperties.Hint="Scans for bluetooth devices"
+                Command="{Binding ScanDevicesCommand}"
+                HorizontalOptions="Fill" />
+        
+            <StackLayout BindableLayout.ItemsSource="{Binding Items}" Orientation="Vertical" >
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="Test"/>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+
+</ContentPage>
