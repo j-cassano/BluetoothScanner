@@ -17,7 +17,7 @@
             <StackLayout BindableLayout.ItemsSource="{Binding Items}" Orientation="Vertical" >
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Label Text="Test"/>
+                        <Label Text="{Binding}"/>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </StackLayout>

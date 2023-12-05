@@ -15,10 +15,7 @@ namespace BluetoothScanner.ViewModels
         public DeviceScannerViewModel(IBluetoothScanner bluetoothScanner)
         {
             this.bluetoothScanner = bluetoothScanner;
-            Items.Add("test");
-            Items.Add("test");
-            Items.Add("test");
-
+            bluetoothScanner.DeviceFound += OnDeviceFound;
             ScanDevicesCommand = new AsyncRelayCommand(OnBluetoothScanClicked);
         }
 
@@ -34,19 +31,24 @@ namespace BluetoothScanner.ViewModels
             set => SetProperty(ref scanButtonText, value);
         }
 
+        private void OnDeviceFound(Object sender, EventArgs test)
+        {
+            MainThread.BeginInvokeOnMainThread(() => Items.Add("New device"));
+;
+        }
+
         private async Task OnBluetoothScanClicked()
         {
             if (isScanning)
             {
                 isScanning = false;
-                await bluetoothScanner.ScanForDevices();
+                await bluetoothScanner.StopDeviceScan();
                 ScanButtonText = "Scan for devices";
                 return;
             }
 
             isScanning = true;
-            // todo start 
-
+            await bluetoothScanner.ScanForDevices();
             ScanButtonText = "Stop Scanning";
         }
     }
