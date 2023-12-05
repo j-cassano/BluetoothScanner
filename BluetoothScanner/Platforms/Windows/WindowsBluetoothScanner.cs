@@ -6,7 +6,7 @@ namespace BluetoothScanner.Platforms.Windows
 {
     public class WindowsBluetoothScanner : IBluetoothScanner
     {
-        public event EventHandler? DeviceFound;
+        public event EventHandler<DeviceDiscoveredEventArgs>? OnDeviceDiscovered;
         private BluetoothLEAdvertisementWatcher watcher;
 
         public WindowsBluetoothScanner()
@@ -31,13 +31,22 @@ namespace BluetoothScanner.Platforms.Windows
 
         private async void OnAdvertisementReceived(BluetoothLEAdvertisementWatcher watcher, BluetoothLEAdvertisementReceivedEventArgs eventArgs)
         {
-           
             DateTimeOffset timestamp = eventArgs.Timestamp;
             BluetoothLEAdvertisementType advertisementType = eventArgs.AdvertisementType;
-            Int16 rssi = eventArgs.RawSignalStrengthInDBm;
-            string localName = eventArgs.Advertisement.LocalName;
+          
+            var deviceInfo = new DeviceInfo
+            {
+                Name = eventArgs.Advertisement.LocalName,
+                RSSI = eventArgs.RawSignalStrengthInDBm,
+                BluetoothAddress = eventArgs.BluetoothAddress.ToString()
+            };
 
-            DeviceFound?.Invoke(this, EventArgs.Empty);
+            var deviceDiscoveredEventArgs = new DeviceDiscoveredEventArgs
+            {
+                DeviceInfo = deviceInfo
+            };
+
+            OnDeviceDiscovered?.Invoke(this, deviceDiscoveredEventArgs);
         }
 
     }

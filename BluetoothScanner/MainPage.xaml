@@ -6,21 +6,48 @@
     <ScrollView
         Padding="30,0">
         <VerticalStackLayout>
-        <Label Text="Devices Found" Style="{StaticResource Headline}" SemanticProperties.HeadingLevel="Level1" />
+        <Label Text="BLE Device Scanner" Style="{StaticResource Headline}" SemanticProperties.HeadingLevel="Level1" />
         <Button
                 x:Name="ScanBtn"
                 Text="{Binding ScanButtonText}" 
                 SemanticProperties.Hint="Scans for bluetooth devices"
                 Command="{Binding ScanDevicesCommand}"
                 HorizontalOptions="Fill" />
-        
-            <StackLayout BindableLayout.ItemsSource="{Binding Items}" Orientation="Vertical" >
-                <BindableLayout.ItemTemplate>
+            <Grid IsVisible="{Binding test}">
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition  Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="7*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Text="Device Name" FontAttributes="Bold" />
+                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Text="RSSI" FontAttributes="Bold" />
+                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Text="Bluetooth Address" FontAttributes="Bold" />
+            </Grid>
+            <ListView ItemsSource="{Binding Devices}">
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Text="{Binding}"/>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition  Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="7*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Text="{Binding Name}" />
+                                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center" Text="{Binding RSSI}" />
+                                <Label Grid.Row="0" Grid.RowSpan="1" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Text="{Binding BluetoothAddress}" />
+                            </Grid>
+                        </ViewCell>
                     </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
+                </ListView.ItemTemplate>
+            </ListView>
         </VerticalStackLayout>
     </ScrollView>
 

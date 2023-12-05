@@ -7,7 +7,7 @@ namespace BluetoothScanner.ViewModels
     public class DeviceScannerViewModel : ObservableObject
     {
         private bool isScanning = false;
-        private ObservableCollection<string> items = new ObservableCollection<string>();
+        private ObservableCollection<DeviceInfo> devices = new ObservableCollection<DeviceInfo>();
         private string scanButtonText = "Scan for devices";
         private IBluetoothScanner bluetoothScanner;
         public IAsyncRelayCommand ScanDevicesCommand { get; }
@@ -15,14 +15,14 @@ namespace BluetoothScanner.ViewModels
         public DeviceScannerViewModel(IBluetoothScanner bluetoothScanner)
         {
             this.bluetoothScanner = bluetoothScanner;
-            bluetoothScanner.DeviceFound += OnDeviceFound;
-            ScanDevicesCommand = new AsyncRelayCommand(OnBluetoothScanClicked);
+            bluetoothScanner.OnDeviceDiscovered += OnDeviceFound;
+            ScanDevicesCommand = new AsyncRelayCommand(StartScanning);
         }
 
-        public ObservableCollection<string> Items
+        public ObservableCollection<DeviceInfo> Devices
         {
-            get => items;
-            set => SetProperty(ref items, value);
+            get => devices;
+            set => SetProperty(ref devices, value);
         }
 
         public string ScanButtonText
@@ -31,13 +31,16 @@ namespace BluetoothScanner.ViewModels
             set => SetProperty(ref scanButtonText, value);
         }
 
-        private void OnDeviceFound(Object sender, EventArgs test)
+        private void OnDeviceFound(Object sender, DeviceDiscoveredEventArgs eventArgs)
         {
-            MainThread.BeginInvokeOnMainThread(() => Items.Add("New device"));
-;
+            if (Devices.Any(x => x.BluetoothAddress == eventArgs.DeviceInfo.BluetoothAddress))
+                return;
+
+            eventArgs.DeviceInfo.Name = string.IsNullOrEmpty(eventArgs.DeviceInfo.Name) ? "Unknown device" : eventArgs.DeviceInfo.Name;
+            MainThread.BeginInvokeOnMainThread(() => Devices.Add(eventArgs.DeviceInfo));
         }
 
-        private async Task OnBluetoothScanClicked()
+        private async Task StartScanning()
         {
             if (isScanning)
             {

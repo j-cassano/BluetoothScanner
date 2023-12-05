@@ -6,6 +6,6 @@
 
         Task StopDeviceScan();
 
-        event EventHandler DeviceFound;
+        event EventHandler<DeviceDiscoveredEventArgs> OnDeviceDiscovered;
     }
 }
