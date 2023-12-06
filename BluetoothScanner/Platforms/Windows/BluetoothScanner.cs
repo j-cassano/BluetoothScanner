@@ -2,12 +2,12 @@
 
 namespace BluetoothScanner.Platforms.Windows
 {
-    public class WindowsBluetoothScanner : IBluetoothScanner
+    public class BluetoothScanner : IBluetoothScanner
     {
         public event EventHandler<DeviceDiscoveredEventArgs>? OnDeviceDiscovered;
         private readonly BluetoothLEAdvertisementWatcher watcher;
 
-        public WindowsBluetoothScanner()
+        public BluetoothScanner()
         {
             watcher = new BluetoothLEAdvertisementWatcher();
         }

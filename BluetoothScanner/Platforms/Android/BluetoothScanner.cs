@@ -3,14 +3,14 @@ using Android.Content;
 
 namespace BluetoothScanner.Platforms.Android
 {
-    public class AndroidBluetoothScanner : IBluetoothScanner
+    public class BluetoothScanner : IBluetoothScanner
     {
-        public event EventHandler<DeviceDiscoveredEventArgs> OnDeviceDiscovered;
+        public event EventHandler<DeviceDiscoveredEventArgs>? OnDeviceDiscovered;
         private BluetoothManager? bluetoothManager;
         private BluetoothAdapter? bluetoothAdapter;
         private DeviceFoundReceiver? deviceFoundReceiver;
 
-        public AndroidBluetoothScanner()
+        public BluetoothScanner()
         {
             bluetoothManager = Platform.AppContext?.GetSystemService(Context.BluetoothService) as BluetoothManager;
             bluetoothAdapter = bluetoothManager?.Adapter;
@@ -34,7 +34,8 @@ namespace BluetoothScanner.Platforms.Android
 
         public async Task StopDeviceScan()
         {
-            if (deviceFoundReceiver != null) deviceFoundReceiver.OnDeviceDiscovered -= OnDeviceFound;
+            if (deviceFoundReceiver != null) 
+                deviceFoundReceiver.OnDeviceDiscovered -= OnDeviceFound;
             
             Platform.AppContext?.UnregisterReceiver(deviceFoundReceiver);
             bluetoothAdapter?.CancelDiscovery();

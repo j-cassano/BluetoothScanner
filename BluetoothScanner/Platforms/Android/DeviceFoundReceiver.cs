@@ -11,23 +11,25 @@ namespace BluetoothScanner.Platforms.Android
         {
             if (BluetoothDevice.ActionFound == intent?.Action)
             {
-                BluetoothDevice? device = intent?.GetParcelableExtra(BluetoothDevice.ExtraDevice) as BluetoothDevice;
+                BluetoothDevice? device = intent?.GetParcelableExtra(BluetoothDevice.ExtraDevice, Java.Lang.Class.FromType(typeof(BluetoothDevice))) as BluetoothDevice;
                 var rssi = intent?.GetShortExtra(BluetoothDevice.ExtraRssi, short.MinValue);
-                
-                var deviceInfo = new DeviceInfo
+
+                if (device != null)
                 {
-                    Name = device.Name,
-                    RSSI = (int)rssi,
-                    BluetoothAddress = device.Address
-                };
+                    var deviceInfo = new DeviceInfo
+                    {
+                        Name = string.IsNullOrEmpty(device.Name) ? string.Empty : device.Name,
+                        RSSI = rssi == null ? short.MinValue : (int)rssi,
+                        BluetoothAddress = string.IsNullOrEmpty(device.Address) ? string.Empty : device.Address
+                    };
 
-                var deviceDiscoveredEventArgs = new DeviceDiscoveredEventArgs
-                {
-                    DeviceInfo = deviceInfo
-                };
+                    var deviceDiscoveredEventArgs = new DeviceDiscoveredEventArgs
+                    {
+                        DeviceInfo = deviceInfo
+                    };
 
-
-                OnDeviceDiscovered?.Invoke(this, deviceDiscoveredEventArgs);
+                    OnDeviceDiscovered?.Invoke(this, deviceDiscoveredEventArgs);
+                }
             }
         }
     }

@@ -1,13 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace BluetoothScanner.ViewModels
 {
     public class DeviceScannerViewModel : ObservableObject
     {
         private bool isScanning = false;
-        private ObservableCollection<DeviceInfo> devices = new ObservableCollection<DeviceInfo>();
+        private ObservableCollection<DeviceInfo> devices = [];
         private string scanButtonText = "Scan for devices";
         private IBluetoothScanner bluetoothScanner;
         private IBluetoothPermissionChecker bluetoothPermissionChecker;
@@ -19,6 +20,11 @@ namespace BluetoothScanner.ViewModels
             this.bluetoothPermissionChecker = bluetoothPermissionChecker;
             bluetoothScanner.OnDeviceDiscovered += OnDeviceFound;
             ScanDevicesCommand = new AsyncRelayCommand(ToggleBleScan);
+        }
+
+        ~DeviceScannerViewModel()
+        {
+            bluetoothScanner.OnDeviceDiscovered -= OnDeviceFound;
         }
 
         public ObservableCollection<DeviceInfo> Devices
@@ -33,32 +39,52 @@ namespace BluetoothScanner.ViewModels
             set => SetProperty(ref scanButtonText, value);
         }
 
-        private void OnDeviceFound(Object sender, DeviceDiscoveredEventArgs eventArgs)
+        private void OnDeviceFound(object? sender, DeviceDiscoveredEventArgs eventArgs)
         {
-            if (Devices.Any(x => x.BluetoothAddress == eventArgs.DeviceInfo.BluetoothAddress))
-                return;
+            try
+            {
+                if (Devices.Any(x => x.BluetoothAddress == eventArgs.DeviceInfo.BluetoothAddress))
+                    return;
 
-            eventArgs.DeviceInfo.Name = string.IsNullOrEmpty(eventArgs.DeviceInfo.Name) ? "Unknown device" : eventArgs.DeviceInfo.Name;
-            MainThread.BeginInvokeOnMainThread(() => Devices.Add(eventArgs.DeviceInfo));
+                eventArgs.DeviceInfo.Name = string.IsNullOrEmpty(eventArgs.DeviceInfo.Name) ? "Unknown device" : eventArgs.DeviceInfo.Name;
+                MainThread.BeginInvokeOnMainThread(() => Devices.Add(eventArgs.DeviceInfo));
+            }
+            catch (Exception ex)
+            {
+                // In production this would use a logger that could upload the error message to a server for a developer to view
+                // Logging to the user's phone only when running a debug build would not be ideal and this is just here to prevent an app crash
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+            }
         }
 
         private async Task ToggleBleScan()
         {
-            if (isScanning)
+            try
             {
-                await StopScanning();
-                return;
-            }
-
-            if (await bluetoothPermissionChecker.IsPermissionGranted() == false)
-            {
-                var status = await bluetoothPermissionChecker.RequestPermissionAsync();
-                if (status != PermissionStatus.Granted)
+                if (isScanning)
+                {
+                    await StopScanning();
                     return;
-            }
+                }
 
-            Devices.Clear();
-            await StartScanning();
+                if (await bluetoothPermissionChecker.IsPermissionGranted() == false)
+                {
+                    var status = await bluetoothPermissionChecker.RequestPermissionAsync();
+                    if (status != PermissionStatus.Granted)
+                        return;
+                }
+
+                Devices.Clear();
+                await StartScanning();
+            }
+            catch (Exception ex)
+            {
+                // In production this would use a logger that could upload the error message to a server for a developer to view
+                // Logging to the user's phone would not help and this is just here to prevent an app crash
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+            }
         }
 
         private async Task StartScanning()
@@ -73,7 +99,6 @@ namespace BluetoothScanner.ViewModels
             isScanning = false;
             await bluetoothScanner.StopDeviceScan();
             ScanButtonText = "Scan for devices";
-
         }
     }
 }

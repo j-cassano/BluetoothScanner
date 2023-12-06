@@ -11,7 +11,14 @@
 
         public async Task<PermissionStatus> RequestPermissionAsync()
         {
-            return await Permissions.RequestAsync<BluetoothScanPermission>();
+            var status = await Permissions.RequestAsync<BluetoothScanPermission>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            await Shell.Current.DisplayAlert("Bluetooth permissions required.", "To use this app and scan for bluetooth devices you must go to your settings and allow bluetooth", "OK");
+
+            return status;
         }
     }
 }

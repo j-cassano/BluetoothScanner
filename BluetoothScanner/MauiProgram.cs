@@ -21,15 +21,13 @@ namespace BluetoothScanner
 #endif
 
 #if WINDOWS
-            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Windows.WindowsBluetoothScanner>();
+            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Windows.BluetoothScanner>();
             builder.Services.AddSingleton<IBluetoothPermissionChecker, BluetoothScanner.Platforms.Windows.BluetoothPermissionChecker>();
 #endif
 #if ANDROID
-            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Android.AndroidBluetoothScanner>();
+            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Android.BluetoothScanner>();
             builder.Services.AddSingleton<IBluetoothPermissionChecker, BluetoothScanner.Platforms.Android.BluetoothPermissionChecker>();
 #endif
-
-
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<DeviceScannerViewModel>();
             return builder.Build();
