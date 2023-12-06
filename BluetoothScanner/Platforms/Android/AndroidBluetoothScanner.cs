@@ -34,6 +34,9 @@ namespace BluetoothScanner.Platforms.Android
 
         public async Task StopDeviceScan()
         {
+            if (deviceFoundReceiver != null) deviceFoundReceiver.OnDeviceDiscovered -= OnDeviceFound;
+            
+            Platform.AppContext?.UnregisterReceiver(deviceFoundReceiver);
             bluetoothAdapter?.CancelDiscovery();
         }
 

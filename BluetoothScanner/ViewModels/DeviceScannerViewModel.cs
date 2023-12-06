@@ -53,12 +53,11 @@ namespace BluetoothScanner.ViewModels
             if (await bluetoothPermissionChecker.IsPermissionGranted() == false)
             {
                 var status = await bluetoothPermissionChecker.RequestPermissionAsync();
-                if (status == PermissionStatus.Granted)
-                {
-                    await StartScanning();
-                }
+                if (status != PermissionStatus.Granted)
+                    return;
             }
 
+            Devices.Clear();
             await StartScanning();
         }
 
