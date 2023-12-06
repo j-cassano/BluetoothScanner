@@ -12,11 +12,12 @@ namespace BluetoothScanner.Platforms.Android
             if (BluetoothDevice.ActionFound == intent?.Action)
             {
                 BluetoothDevice? device = intent?.GetParcelableExtra(BluetoothDevice.ExtraDevice) as BluetoothDevice;
-
+                var rssi = intent?.GetShortExtra(BluetoothDevice.ExtraRssi, short.MinValue);
+                
                 var deviceInfo = new DeviceInfo
                 {
                     Name = device.Name,
-                    RSSI = -1,
+                    RSSI = (int)rssi,
                     BluetoothAddress = device.Address
                 };
 

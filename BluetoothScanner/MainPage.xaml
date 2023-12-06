@@ -32,9 +32,8 @@
                         <ViewCell>
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
+									<RowDefinition Height="auto" />
+								</Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition  Width="2*" />
                                     <ColumnDefinition Width="*" />
