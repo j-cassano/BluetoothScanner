@@ -10,13 +10,15 @@ namespace BluetoothScanner.ViewModels
         private ObservableCollection<DeviceInfo> devices = new ObservableCollection<DeviceInfo>();
         private string scanButtonText = "Scan for devices";
         private IBluetoothScanner bluetoothScanner;
+        private IBluetoothPermissionChecker bluetoothPermissionChecker;
         public IAsyncRelayCommand ScanDevicesCommand { get; }
 
-        public DeviceScannerViewModel(IBluetoothScanner bluetoothScanner)
+        public DeviceScannerViewModel(IBluetoothScanner bluetoothScanner, IBluetoothPermissionChecker bluetoothPermissionChecker)
         {
             this.bluetoothScanner = bluetoothScanner;
+            this.bluetoothPermissionChecker = bluetoothPermissionChecker;
             bluetoothScanner.OnDeviceDiscovered += OnDeviceFound;
-            ScanDevicesCommand = new AsyncRelayCommand(StartScanning);
+            ScanDevicesCommand = new AsyncRelayCommand(ToggleBleScan);
         }
 
         public ObservableCollection<DeviceInfo> Devices
@@ -40,19 +42,39 @@ namespace BluetoothScanner.ViewModels
             MainThread.BeginInvokeOnMainThread(() => Devices.Add(eventArgs.DeviceInfo));
         }
 
-        private async Task StartScanning()
+        private async Task ToggleBleScan()
         {
             if (isScanning)
             {
-                isScanning = false;
-                await bluetoothScanner.StopDeviceScan();
-                ScanButtonText = "Scan for devices";
+                await StopScanning();
                 return;
             }
 
+            if (await bluetoothPermissionChecker.IsPermissionGranted() == false)
+            {
+                var status = await bluetoothPermissionChecker.RequestPermissionAsync();
+                if (status == PermissionStatus.Granted)
+                {
+                    await StartScanning();
+                }
+            }
+
+            await StartScanning();
+        }
+
+        private async Task StartScanning()
+        {
             isScanning = true;
             await bluetoothScanner.ScanForDevices();
             ScanButtonText = "Stop Scanning";
+        }
+
+        private async Task StopScanning()
+        {
+            isScanning = false;
+            await bluetoothScanner.StopDeviceScan();
+            ScanButtonText = "Scan for devices";
+
         }
     }
 }

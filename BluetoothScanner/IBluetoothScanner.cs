@@ -7,5 +7,7 @@
         Task StopDeviceScan();
 
         event EventHandler<DeviceDiscoveredEventArgs> OnDeviceDiscovered;
+
+        bool IsBluetoothOn();
     }
 }

@@ -1,13 +1,11 @@
-﻿
-using System.Diagnostics;
-using Windows.Devices.Bluetooth.Advertisement;
+﻿using Windows.Devices.Bluetooth.Advertisement;
 
 namespace BluetoothScanner.Platforms.Windows
 {
     public class WindowsBluetoothScanner : IBluetoothScanner
     {
         public event EventHandler<DeviceDiscoveredEventArgs>? OnDeviceDiscovered;
-        private BluetoothLEAdvertisementWatcher watcher;
+        private readonly BluetoothLEAdvertisementWatcher watcher;
 
         public WindowsBluetoothScanner()
         {
@@ -18,10 +16,6 @@ namespace BluetoothScanner.Platforms.Windows
         {
             watcher.Received += OnAdvertisementReceived;
             watcher.Start();
-            Debug.WriteLine("Max out of range timeout: " + watcher.MaxOutOfRangeTimeout);
-            Debug.WriteLine("Min out of range timeout: " + watcher.MinOutOfRangeTimeout);
-            Debug.WriteLine("Max sampling interval: " + watcher.MaxSamplingInterval);
-            Debug.WriteLine("Min sampling interval: " + watcher.MinSamplingInterval);
         }
 
         public async Task StopDeviceScan()
@@ -49,5 +43,9 @@ namespace BluetoothScanner.Platforms.Windows
             OnDeviceDiscovered?.Invoke(this, deviceDiscoveredEventArgs);
         }
 
+        public bool IsBluetoothOn()
+        {
+            return true;
+        }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using BluetoothScanner.ViewModels;
 using Microsoft.Extensions.Logging;
-#if WINDOWS
-using BluetoothScanner.Platforms.Windows;
-#endif
+
 namespace BluetoothScanner
 {
     public static class MauiProgram
@@ -23,8 +21,15 @@ namespace BluetoothScanner
 #endif
 
 #if WINDOWS
-            builder.Services.AddSingleton<IBluetoothScanner, WindowsBluetoothScanner>();
+            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Windows.WindowsBluetoothScanner>();
+            builder.Services.AddSingleton<IBluetoothPermissionChecker, BluetoothScanner.Platforms.Windows.BluetoothPermissionChecker>();
 #endif
+#if ANDROID
+            builder.Services.AddSingleton<IBluetoothScanner, BluetoothScanner.Platforms.Android.AndroidBluetoothScanner>();
+            builder.Services.AddSingleton<IBluetoothPermissionChecker, BluetoothScanner.Platforms.Android.BluetoothPermissionChecker>();
+#endif
+
+
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<DeviceScannerViewModel>();
             return builder.Build();
